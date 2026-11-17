@@ -85,7 +85,7 @@ func (r *Repository) GetByToken(ctx context.Context, token string) (*link.Link, 
 		return nil, err
 	}
 
-	linkJson, err := json.Marshal(l)
+	linkJson, err := json.Marshal(ToCacheableDTO(l))
 	if err != nil {
 		logger.Printf("Error marshaling link: %v", err)
 	}
@@ -97,8 +97,8 @@ func (r *Repository) GetByToken(ctx context.Context, token string) (*link.Link, 
 	return l, nil
 }
 
-func (r *Repository) GetAllByUser(ctx context.Context, uid string) ([]*link.Link, error) {
-	var links []*link.Link
+func (r *Repository) GetAllByUser(ctx context.Context, uid string) ([]link.Link, error) {
+	var links []link.Link
 
 	query := `
 		SELECT token, document_id, creator_id, 
@@ -118,7 +118,7 @@ func (r *Repository) GetAllByUser(ctx context.Context, uid string) ([]*link.Link
 		if err != nil {
 			return nil, err
 		}
-		links = append(links, l)
+		links = append(links, *l)
 	}
 
 	return links, nil
@@ -149,7 +149,7 @@ func (r *Repository) Create(
 	}
 
 	linkKey := fmt.Sprintf("link:%s", token)
-	linkJson, err := json.Marshal(l)
+	linkJson, err := json.Marshal(ToCacheableDTO(l))
 	if err != nil {
 		logger.Printf("Error marshaling link: %v", err)
 	}
