@@ -8,9 +8,7 @@ import (
 	"time"
 
 	docv1 "github.com/dockloud/contract/gen/document/v1"
-	linkv1 "github.com/dockloud/contract/gen/link/v1"
 	"github.com/dockloud/link/internal/domain/link"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type LinkRepository interface {
@@ -63,12 +61,10 @@ func (s *Service) GetUserLinks(ctx context.Context, in *GetUserLinksInput) (*Get
 	}, nil
 }
 
-func (s *Service) CreateLink(ctx context.Context, in *CreateLinkInput) (*linkv1.CreateLinkResponse, error) {
-	var expirationTime *time.Time
+func (s *Service) CreateLink(ctx context.Context, in *CreateLinkInput) (*CreateLinkOutput, error) {
 	var timeStr *string
 	if in.HoursToExpire != nil {
 		expiration := time.Now().Add(time.Duration(*in.HoursToExpire) * time.Hour)
-		expirationTime = &expiration
 		formattedExpiration := expiration.Format(time.RFC3339)
 		timeStr = &formattedExpiration
 	}
@@ -79,33 +75,27 @@ func (s *Service) CreateLink(ctx context.Context, in *CreateLinkInput) (*linkv1.
 		return nil, err
 	}
 
-	var mappedTimestamp *timestamppb.Timestamp
-	if expirationTime != nil {
-		mappedTimestamp = timestamppb.New(*expirationTime)
-	} else {
-		mappedTimestamp = nil
-	}
-
-	return &linkv1.CreateLinkResponse{
-		Link: &linkv1.Link{
-			Token:         l.Token,
-			DocumentId:    int64(l.DocumentID),
-			ReadAllowed:   l.ReadAllowed,
-			WriteAllowed:  l.WriteAllowed,
-			DeleteAllowed: l.DeleteAllowed,
-			CreatedAt:     timestamppb.New(l.CreatedAt),
-			ExpiresAt:     mappedTimestamp,
-		},
+	return &CreateLinkOutput{
+		Link: *l,
 	}, nil
 }
 
-func (s *Service) RevokeLink(ctx context.Context, in *RevokeLinkInput) (*linkv1.RevokeLinkResponse, error) {
-	err := s.linkRepo.Revoke(ctx, in.Token)
+func (s *Service) RevokeLink(ctx context.Context, in *RevokeLinkInput) (*RevokeLinkOutput, error) {
+	l, err := s.linkRepo.GetByToken(ctx, in.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	return &linkv1.RevokeLinkResponse{}, nil
+	if err := l.CanRevoke(in.UID); err != nil {
+		return nil, err
+	}
+
+	err = s.linkRepo.Revoke(ctx, in.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &RevokeLinkOutput{}, nil
 }
 
 func (s *Service) GetDocument(ctx context.Context, in *GetDocumentInput) (*docv1.GetUnsafeDocumentResponse, error) {

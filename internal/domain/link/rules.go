@@ -7,6 +7,7 @@ import (
 
 var ErrLinkExpired = errors.New("link has expired")
 var ErrLinkRevoked = errors.New("link has been revoked")
+var ErrLinkNotOwned = errors.New("link is not owned by the user")
 var ErrOperationDeclined = errors.New("operation declined")
 
 func (l *Link) IsExpired() error {
@@ -24,6 +25,13 @@ func (l *Link) IsRevoked() error {
 		return nil
 	}
 	return ErrLinkRevoked
+}
+
+func (l *Link) CanRevoke(uid string) error {
+	if l.CreatorID != uid {
+		return ErrLinkNotOwned
+	}
+	return nil
 }
 
 func (l *Link) CanRead() error {

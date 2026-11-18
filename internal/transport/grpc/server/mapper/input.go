@@ -11,12 +11,6 @@ func ToGetUserLinksInput(_ *pb.GetLinksRequest, uid string) *link.GetUserLinksIn
 	}
 }
 
-func ToGetDocumentInput(req *pb.GetDocumentByLinkRequest) *link.GetDocumentInput {
-	return &link.GetDocumentInput{
-		Token: req.Token,
-	}
-}
-
 func ToCreateLinkInput(req *pb.CreateLinkRequest, uid string) *link.CreateLinkInput {
 	var hoursToExpire *int
 	if req.HoursToExpire != nil {
@@ -31,5 +25,33 @@ func ToCreateLinkInput(req *pb.CreateLinkRequest, uid string) *link.CreateLinkIn
 		WriteAllowed:  req.WriteAllowed,
 		DeleteAllowed: req.DeleteAllowed,
 		HoursToExpire: hoursToExpire,
+	}
+}
+
+func ToRevokeLinkInput(req *pb.RevokeLinkRequest, uid string) *link.RevokeLinkInput {
+	return &link.RevokeLinkInput{
+		UID:   uid,
+		Token: req.Token,
+	}
+}
+
+func ToGetDocumentInput(req *pb.GetDocumentByLinkRequest) *link.GetDocumentInput {
+	return &link.GetDocumentInput{
+		Token: req.Token,
+	}
+}
+
+func ToUpdateDocumentInput(req *pb.UpdateDocumentByLinkRequest) *link.UpdateDocumentInput {
+	return &link.UpdateDocumentInput{
+		Token:     req.Token,
+		Content:   req.Content,
+		Name:      req.Name,
+		IsPrivate: req.IsPrivate,
+	}
+}
+
+func ToDeleteDocumentInput(req *pb.DeleteDocumentByLinkRequest) *link.DeleteDocumentInput {
+	return &link.DeleteDocumentInput{
+		Token: req.Token,
 	}
 }

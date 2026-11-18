@@ -21,8 +21,17 @@ type CreateLinkInput struct {
 	HoursToExpire *int
 }
 
+type CreateLinkOutput struct {
+	Link link.Link
+}
+
 type RevokeLinkInput struct {
+	UID   string
 	Token string
+}
+
+type RevokeLinkOutput struct {
+	// empty
 }
 
 type GetDocumentInput struct {

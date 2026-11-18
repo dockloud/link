@@ -27,3 +27,22 @@ func NewKeyringInterceptor(keyring Keyring) (grpc.UnaryServerInterceptor, error)
 		return interceptor(ctx, request, info, handler)
 	}, nil
 }
+
+func NewSignInterceptor(secret []byte) (grpc.UnaryClientInterceptor, error) {
+	signingKey := serviceauth.Key{
+		ID:      "lnk-gateway-v1",
+		Service: "dockloud-link",
+		Secret:  secret,
+	}
+
+	signer, err := serviceauth.NewSigner(signingKey)
+	if err != nil {
+		return nil, err
+	}
+	interceptor, err := grpcauth.NewClientInterceptor(signer, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return interceptor, nil
+}
