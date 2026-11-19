@@ -30,7 +30,7 @@ func NewKeyringInterceptor(keyring Keyring) (grpc.UnaryServerInterceptor, error)
 
 func NewSignInterceptor(secret []byte) (grpc.UnaryClientInterceptor, error) {
 	signingKey := serviceauth.Key{
-		ID:      "lnk-gateway-v1",
+		ID:      "dck-link-v1",
 		Service: "dockloud-link",
 		Secret:  secret,
 	}
