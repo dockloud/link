@@ -3,7 +3,7 @@ module github.com/dockloud/link
 go 1.27.4
 
 require (
-	github.com/dockloud/contract v0.0.0-20261117084109-a97fb3d30814
+	github.com/dockloud/contract v0.0.0-20261119064745-e77b1560f74d
 	github.com/dockloud/service-auth v0.0.0-20261111043837-db5419a71a29
 	github.com/dockloud/user-auth v0.0.0-20261110081610-cd72cdf4a611
 	github.com/lib/pq v1.12.3
@@ -20,10 +20,10 @@ require (
 	github.com/sethvargo/go-retry v0.5.0 // indirect
 	go.uber.org/atomic v1.12.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.62.0 // indirect
+	golang.org/x/net v0.63.0 // indirect
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/text v0.44.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20261116203732-fd2c7689a808 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20261116203732-fd2c7689a808 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20261118221215-c8830f628b3f // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20261118221215-c8830f628b3f // indirect
 )
